@@ -44,28 +44,22 @@ func RunSyncTCPServer() {
 				log.Println("err", err)
 			}
 			respond(cmd, c)
-			// 6. Got some command from the Client: GET or PUT etc
-			// log.Println("command", cmd)
-			/// 7. Trigggering this response
-			// if err = respond(cmd, c); err != nil {
-			// 	log.Print("err write:", err)
-			// }
 		}
 	}
 }
 
-func respond(cmd *core.RedisCmd, c net.Conn) {
+func respond(cmd *core.RedisCmd, c io.ReadWriter) {
 	err := core.EvalAndRespond(cmd, c)
 	if err != nil {
 		respondError(err, c)
 	}
 }
 
-func respondError(err error, c net.Conn) {
+func respondError(err error, c io.ReadWriter) {
 	c.Write([]byte(fmt.Sprintf("-%s\r\n", err)))
 }
 
-func readCommand(c net.Conn) (*core.RedisCmd, error) {
+func readCommand(c io.ReadWriter) (*core.RedisCmd, error) {
 	var buf []byte = make([]byte, 512)
 
 	n, err := c.Read(buf[:]) // when we read it, we put it in a buffer & we get the number of bytes read

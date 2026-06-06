@@ -12,7 +12,8 @@ func main() {
 	setupFlags()
 	log.Println("Jevis on a roll")
 
-	server.RunSyncTCPServer()
+	// server.RunSyncTCPServer()
+	server.RunAsyncTCPServer()
 }
 
 func setupFlags() {
